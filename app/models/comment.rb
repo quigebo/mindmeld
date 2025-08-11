@@ -19,7 +19,6 @@ class Comment < ActiveRecord::Base
   before_save :clean_content
   after_create :schedule_analysis
 
-  # Helper methods to build comments
   def self.build_from(obj, user_id, body, subject = nil, parent_id = nil)
     new(
       commentable: obj,
@@ -28,11 +27,6 @@ class Comment < ActiveRecord::Base
       subject: subject,
       parent_id: parent_id
     )
-  end
-
-  # Check if this comment has children
-  def has_children?
-    children.any?
   end
 
   # Custom methods for our LLM integration

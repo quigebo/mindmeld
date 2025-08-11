@@ -4,14 +4,14 @@ module Llm
 
     # Schema for structured output from LLM analysis
     class AnalysisSchema < RubyLLM::Schema
-    boolean :is_memory_worthy, description: "Whether this comment contains a substantive memory worth including in the final story"
-    string :reasoning, description: "Detailed reasoning for the memory-worthiness decision"
-    string :memory_type, description: "Type of memory (e.g., 'event', 'conversation', 'observation', 'feeling', 'other')"
-    number :confidence, description: "Confidence level 0-1 for the analysis"
-    array :key_details, description: "Key details or facts mentioned in the comment" do
-      string description: "A specific detail or fact"
+      boolean :is_memory_worthy, description: "Whether this comment contains a substantive memory worth including in the final story"
+      string :reasoning, description: "Detailed reasoning for the memory-worthiness decision"
+      string :memory_type, description: "Type of memory (e.g., 'event', 'conversation', 'observation', 'feeling', 'other')"
+      number :confidence, description: "Confidence level 0-1 for the analysis"
+      array :key_details, description: "Key details or facts mentioned in the comment" do
+        string description: "A specific detail or fact"
+      end
     end
-  end
 
   def initialize(comment)
     @comment = comment
@@ -34,8 +34,9 @@ module Llm
 
   private
 
+  # TODO: add a system prompt #with_instructions
   def perform_analysis
-    chat = RubyLLM.chat
+    chat = RubyLLM.chat.with_temperature(1.0)
     chat.with_schema(AnalysisSchema)
         .ask(analysis_prompt)
   end
@@ -71,7 +72,7 @@ module Llm
   end
 
   def update_comment_with_analysis(analysis)
-    content = analysis.content
+    content = analysis.content.with_indifferent_access
 
     if content[:is_memory_worthy]
       @comment.mark_as_memory_worthy!(

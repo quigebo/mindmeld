@@ -5,7 +5,7 @@ class MemorySynthesisJob < ApplicationJob
     story = Story.find(story_id)
 
     # Only synthesize if there are memory-worthy comments
-    return if story.comments.memory_worthy.empty?
+    return if story.comment_threads.memory_worthy.empty?
 
     # Synthesize the memories
     Llm::MemorySynthesisService.new(story).synthesize!
