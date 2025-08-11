@@ -10,7 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_11_150600) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_11_185727) do
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.string "model_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "comments", force: :cascade do |t|
     t.integer "commentable_id"
     t.string "commentable_type"
@@ -33,6 +67,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_150600) do
     t.index ["occurred_at"], name: "index_comments_on_occurred_at"
     t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "chat_id", null: false
+    t.string "role"
+    t.text "content"
+    t.string "model_id"
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.integer "tool_call_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["tool_call_id"], name: "index_messages_on_tool_call_id"
   end
 
   create_table "participants", force: :cascade do |t|
@@ -70,6 +118,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_150600) do
     t.index ["story_id"], name: "index_synthesized_memories_on_story_id"
   end
 
+  create_table "tool_calls", force: :cascade do |t|
+    t.integer "message_id", null: false
+    t.string "tool_call_id", null: false
+    t.string "name", null: false
+    t.json "arguments", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_tool_calls_on_message_id"
+    t.index ["tool_call_id"], name: "index_tool_calls_on_tool_call_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -88,8 +147,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_150600) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "messages", "chats"
   add_foreign_key "participants", "stories"
   add_foreign_key "participants", "users"
   add_foreign_key "stories", "users", column: "creator_id"
   add_foreign_key "synthesized_memories", "stories"
+  add_foreign_key "tool_calls", "messages"
 end

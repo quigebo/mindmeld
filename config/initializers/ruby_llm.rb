@@ -1,4 +1,4 @@
-# Configure RubyLLM for AI-powered features
+# # Configure RubyLLM for AI-powered features
 RubyLLM.configure do |config|
   # OpenAI configuration (primary LLM provider)
   config.openai_api_key = ENV.fetch('OPENAI_API_KEY', nil)

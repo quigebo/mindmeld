@@ -31,6 +31,7 @@ gem "paper_trail"
 
 # LLM integration for AI-powered features
 gem "ruby_llm"
+gem 'ruby_llm-schema'
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
@@ -72,7 +73,7 @@ group :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
-  
+
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
