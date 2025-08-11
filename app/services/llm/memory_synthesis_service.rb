@@ -1,8 +1,9 @@
-class LLM::MemorySynthesisService
-  include ActiveSupport::Configurable
+module Llm
+  class MemorySynthesisService
+    include ActiveSupport::Configurable
 
-  # Schema for structured output from memory synthesis
-  class SynthesisSchema < RubyLLM::Schema
+    # Schema for structured output from memory synthesis
+    class SynthesisSchema < RubyLLM::Schema
     string :narrative, description: "The synthesized narrative in third-person perspective"
     string :title, description: "A compelling title for the synthesized story"
     string :summary, description: "A brief summary of the key events and themes"
@@ -111,5 +112,6 @@ class LLM::MemorySynthesisService
     )
 
     memory
+  end
   end
 end

@@ -8,7 +8,7 @@ class CommentAnalysisJob < ApplicationJob
     return if comment.is_memory_worthy.present?
 
     # Analyze the comment
-    LLM::CommentAnalyzerService.new(comment).analyze!
+    Llm::CommentAnalyzerService.new(comment).analyze!
 
     # If this comment was marked as memory-worthy, trigger memory synthesis
     if comment.reload.is_memory_worthy?

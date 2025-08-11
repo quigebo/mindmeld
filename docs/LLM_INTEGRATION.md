@@ -69,30 +69,30 @@ When memory-worthy comments are available:
 
 ## Service Classes
 
-### LLM::CommentAnalyzerService
+### Llm::CommentAnalyzerService
 
 Analyzes individual comments to determine memory-worthiness.
 
 ```ruby
-service = LLM::CommentAnalyzerService.new(comment)
+service = Llm::CommentAnalyzerService.new(comment)
 service.analyze!
 ```
 
-### LLM::MemorySynthesisService
+### Llm::MemorySynthesisService
 
 Synthesizes memory-worthy comments into a narrative.
 
 ```ruby
-service = LLM::MemorySynthesisService.new(story)
+service = Llm::MemorySynthesisService.new(story)
 service.synthesize!
 ```
 
-### LLM::StoryManagementService
+### Llm::StoryManagementService
 
 Provides high-level management of LLM operations for a story.
 
 ```ruby
-service = LLM::StoryManagementService.new(story)
+service = Llm::StoryManagementService.new(story)
 service.regenerate_synthesis!
 service.reanalyze_all_comments!
 stats = service.processing_stats
@@ -175,7 +175,7 @@ rails llm:test_config
 ```ruby
 # Analyze a specific comment
 comment = story.comments.find(123)
-LLM::CommentAnalyzerService.new(comment).analyze!
+Llm::CommentAnalyzerService.new(comment).analyze!
 
 # Check analysis results
 if comment.is_memory_worthy?
@@ -189,7 +189,7 @@ end
 ```ruby
 # Synthesize memories for a story
 story = Story.find(456)
-LLM::MemorySynthesisService.new(story).synthesize!
+Llm::MemorySynthesisService.new(story).synthesize!
 
 # Access synthesized memory
 memory = story.synthesized_memory

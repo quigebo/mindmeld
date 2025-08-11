@@ -2,7 +2,7 @@
 RubyLLM.configure do |config|
   # OpenAI configuration (primary LLM provider)
   config.openai_api_key = ENV.fetch('OPENAI_API_KEY', nil)
-  config.openai_organization_id = ENV.fetch('OPENAI_ORGANIZATION_ID', nil)
+  # config.openai_organization_id = ENV.fetch('OPENAI_ORGANIZATION_ID', nil)
 
   # Anthropic configuration (alternative provider)
   # config.anthropic_api_key = ENV.fetch('ANTHROPIC_API_KEY', nil)

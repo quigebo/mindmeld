@@ -8,7 +8,7 @@ class MemorySynthesisJob < ApplicationJob
     return if story.comments.memory_worthy.empty?
 
     # Synthesize the memories
-    LLM::MemorySynthesisService.new(story).synthesize!
+    Llm::MemorySynthesisService.new(story).synthesize!
 
     Rails.logger.info "Successfully synthesized memories for story #{story_id}"
   rescue ActiveRecord::RecordNotFound

@@ -1,8 +1,9 @@
-class LLM::CommentAnalyzerService
-  include ActiveSupport::Configurable
+module Llm
+  class CommentAnalyzerService
+    include ActiveSupport::Configurable
 
-  # Schema for structured output from LLM analysis
-  class AnalysisSchema < RubyLLM::Schema
+    # Schema for structured output from LLM analysis
+    class AnalysisSchema < RubyLLM::Schema
     boolean :is_memory_worthy, description: "Whether this comment contains a substantive memory worth including in the final story"
     string :reasoning, description: "Detailed reasoning for the memory-worthiness decision"
     string :memory_type, description: "Type of memory (e.g., 'event', 'conversation', 'observation', 'feeling', 'other')"
@@ -85,5 +86,6 @@ class LLM::CommentAnalyzerService
         content[:reasoning]
       )
     end
+  end
   end
 end
