@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  story: one
+  content: MyText
+  metadata: 
+  version: 1
+  generated_at: 2025-08-11 15:46:09
+
+two:
+  story: two
+  content: MyText
+  metadata: 
+  version: 1
+  generated_at: 2025-08-11 15:46:09
