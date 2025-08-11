@@ -17,6 +17,7 @@ class Comment < ActiveRecord::Base
 
   # Callbacks
   before_save :clean_content
+  after_create :schedule_analysis
 
   # Helper methods to build comments
   def self.build_from(obj, user_id, body, subject = nil, parent_id = nil)
@@ -53,5 +54,9 @@ class Comment < ActiveRecord::Base
 
   def clean_content
     self.body = body&.strip
+  end
+
+  def schedule_analysis
+    CommentAnalysisJob.perform_later(id)
   end
 end

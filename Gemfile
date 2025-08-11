@@ -29,6 +29,9 @@ gem "acts_as_commentable_with_threading"
 # Versioning for models
 gem "paper_trail"
 
+# LLM integration for AI-powered features
+gem "ruby_llm"
+
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
@@ -63,6 +66,11 @@ group :development do
 end
 
 group :test do
+  # RSpec for testing
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
+  
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

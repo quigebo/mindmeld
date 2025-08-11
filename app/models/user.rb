@@ -10,8 +10,8 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false },
                     format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  # Normalize email before saving
-  before_save :normalize_email
+  # Normalize email before validation
+  before_validation :normalize_email
 
   private
 
