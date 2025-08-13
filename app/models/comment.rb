@@ -5,6 +5,8 @@ class Comment < ActiveRecord::Base
   # Associations
   belongs_to :commentable, polymorphic: true
   belongs_to :user
+  has_many :comment_entities, dependent: :destroy
+  has_many :entities, through: :comment_entities
 
   # Validations
   validates :body, presence: true

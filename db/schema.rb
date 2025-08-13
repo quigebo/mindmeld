@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_11_185727) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_13_184432) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -45,6 +45,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_185727) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "comment_entities", force: :cascade do |t|
+    t.integer "comment_id", null: false
+    t.integer "entity_id", null: false
+    t.decimal "confidence_score", precision: 3, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["comment_id", "entity_id"], name: "index_comment_entities_on_comment_id_and_entity_id", unique: true
+    t.index ["comment_id"], name: "index_comment_entities_on_comment_id"
+    t.index ["entity_id", "confidence_score"], name: "index_comment_entities_on_entity_id_and_confidence_score"
+    t.index ["entity_id"], name: "index_comment_entities_on_entity_id"
+  end
+
   create_table "comments", force: :cascade do |t|
     t.integer "commentable_id"
     t.string "commentable_type"
@@ -67,6 +79,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_185727) do
     t.index ["occurred_at"], name: "index_comments_on_occurred_at"
     t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "entities", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "entity_type", null: false
+    t.integer "story_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_type", "name"], name: "index_entities_on_entity_type_and_name"
+    t.index ["story_id", "name", "entity_type"], name: "index_entities_on_story_id_and_name_and_entity_type", unique: true
+    t.index ["story_id"], name: "index_entities_on_story_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -149,6 +172,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_185727) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comment_entities", "comments"
+  add_foreign_key "comment_entities", "entities"
+  add_foreign_key "entities", "stories"
   add_foreign_key "messages", "chats"
   add_foreign_key "participants", "stories"
   add_foreign_key "participants", "users"

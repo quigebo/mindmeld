@@ -15,5 +15,6 @@ Rails.application.routes.draw do
   # Stories routes
   resources :stories, only: [:index, :show, :new, :create] do
     resources :comments, only: [:create]
+    resources :entities, only: [:show]
   end
 end

@@ -8,6 +8,7 @@ class StoriesController < ApplicationController
   def show
     @comments = @story.comment_threads.memory_worthy.chronological.includes(:user)
     @synthesized_memory = @story.synthesized_memory
+    @grouped_entities = Entity.grouped_by_type(@story)
   end
 
   def new

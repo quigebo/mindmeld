@@ -10,6 +10,9 @@ class CommentAnalysisJob < ApplicationJob
     # Analyze the comment
     Llm::CommentAnalyzerService.new(comment).analyze!
 
+    # Extract entities from the comment
+    Llm::EntityExtractionService.new(comment).extract!
+
     # If this comment was marked as memory-worthy, trigger memory synthesis
     if comment.reload.is_memory_worthy?
       MemorySynthesisJob.perform_later(comment.commentable_id)

@@ -13,6 +13,7 @@ class Story < ApplicationRecord
   has_many :participants, dependent: :destroy
   has_many :users, through: :participants
   has_one :synthesized_memory, dependent: :destroy
+  has_many :entities, dependent: :destroy
 
   # Validations
   validates :title, presence: true
