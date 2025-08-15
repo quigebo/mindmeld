@@ -49,31 +49,13 @@
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <!-- Remember Stories -->
-          <div class="intent-card group cursor-pointer" data-intent="remember_stories">
+          <%= link_to select_intent_path(intent: "remember_stories"), class: "group block" do %>
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
               <div class="flex items-center justify-center w-30 mb-6 mx-auto">
                 <%= image_tag "remember.png", alt: "Remember stories", class: "w-full h-full object-contain" %>
               </div>
               <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Remember stories you forgot</h3>
-              <p class="text-gray-600 text-sm leading-relaxed text-center">Recover lost details and moments that slipped away with AI-powered memory enhancement</p>
-              <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto">
-                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Reconnect Friends -->
-          <div class="intent-card group cursor-pointer" data-intent="reconnect_friends">
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-              <div class="flex items-center justify-center w-30 mb-6 mx-auto">
-                <%= image_tag "reconnect.png", alt: "Reconnect with friends", class: "w-full h-full object-contain" %>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Reconnect with friends</h3>
-              <p class="text-gray-600 text-sm leading-relaxed text-center">Strengthen bonds through shared memories and collaborative storytelling experiences</p>
+              <p class="text-gray-600 text-sm leading-relaxed text-center">We forget more than we remember — but your friends can help fill in the blanks. MindMeld guides you through your memories and stitches together the full story, even the parts you thought were gone forever.</p>
               <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
                   <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,124 +64,61 @@
                 </div>
               </div>
             </div>
-          </div>
+          <% end %>
 
-          <!-- Preserve Memories -->
-          <div class="intent-card group cursor-pointer" data-intent="preserve_memories">
+          <!-- Reconnect Friends -->
+          <%= link_to select_intent_path(intent: "reconnect_friends"), class: "group block" do %>
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
               <div class="flex items-center justify-center w-30 mb-6 mx-auto">
-                <%= image_tag "preserve-memories.png", alt: "Preserve memories for family", class: "w-full h-full object-contain" %>
+                <%= image_tag "reconnect.png", alt: "Reconnect with friends", class: "w-full h-full object-contain" %>
               </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Preserve memories for my family</h3>
-              <p class="text-gray-600 text-sm leading-relaxed text-center">Create a lasting legacy for future generations with beautifully crafted family stories</p>
+              <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Connect more deeply</h3>
+              <p class="text-gray-600 text-sm leading-relaxed text-center">Every friend sees the same moment differently — and that difference is gold. MindMeld gives you a reason to reconnect, not just to reminisce, but to rediscover each other through shared storytelling.</p>
               <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div class="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto">
+                <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
                   <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </div>
               </div>
             </div>
-          </div>
+          <% end %>
+
+          <!-- Preserve Memories -->
+          <%= link_to select_intent_path(intent: "preserve_memories"), class: "group block" do %>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
+              <div class="flex items-center justify-center w-30 mb-6 mx-auto">
+                <%= image_tag "preserve-memories.png", alt: "Preserve memories for family", class: "w-full h-full object-contain" %>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Preserve family stories</h3>
+              <p class="text-gray-600 text-sm leading-relaxed text-center">Family stories fade fast unless we preserve them intentionally. MindMeld makes it easy for everyone — young or old — to speak their truth, so future generations can hear their past in their own voices.</p>
+              <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          <% end %>
 
           <!-- Create Stories -->
-          <div class="intent-card group cursor-pointer" data-intent="create_stories">
+          <%= link_to select_intent_path(intent: "create_stories"), class: "group block" do %>
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
               <div class="flex items-center justify-center w-30 mb-6 mx-auto">
                 <%= image_tag "collective-storytelling.png", alt: "Create beautiful stories together", class: "w-full h-full object-contain" %>
               </div>
               <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Create beautiful stories together</h3>
-              <p class="text-gray-600 text-sm leading-relaxed text-center">Transform raw experiences into meaningful narratives with collaborative creativity</p>
+              <p class="text-gray-600 text-sm leading-relaxed text-center">We help you and your crew turn memories into stories that feel alive. With a little help from AI, you'll weave together everyone's perspectives into one cohesive, vivid, emotionally rich experience — one you'll want to keep and share.</p>
               <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto">
+                <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
                   <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Show More Button -->
-        <div class="text-center mb-12">
-          <button id="show-more-btn" class="inline-flex items-center px-6 py-3 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-xl text-gray-700 hover:bg-white/80 hover:border-gray-300/50 font-medium text-lg transition-all duration-300 hover:shadow-lg">
-            Show more options
-            <svg class="w-5 h-5 ml-2 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Secondary Value Propositions (Hidden by default) -->
-        <div id="secondary-options" class="hidden">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <!-- See New Perspectives -->
-            <div class="intent-card group cursor-pointer" data-intent="new_perspectives">
-              <div class="bg-white/60 backdrop-blur-sm rounded-xl p-6 h-full shadow-sm border border-gray-100/50 hover:shadow-lg hover:border-blue-200/80 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl mb-4 mx-auto">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2 text-center">See memories from new perspectives</h3>
-                <p class="text-gray-600 text-sm leading-relaxed text-center">Discover how others experienced the same moments</p>
-              </div>
-            </div>
-
-            <!-- Document Journey -->
-            <div class="intent-card group cursor-pointer" data-intent="document_journey">
-              <div class="bg-white/60 backdrop-blur-sm rounded-xl p-6 h-full shadow-sm border border-gray-100/50 hover:shadow-lg hover:border-blue-200/80 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl mb-4 mx-auto">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2 text-center">Document my life journey</h3>
-                <p class="text-gray-600 text-sm leading-relaxed text-center">Keep a record of meaningful experiences</p>
-              </div>
-            </div>
-
-            <!-- Fun Reminiscing -->
-            <div class="intent-card group cursor-pointer" data-intent="fun_reminiscing">
-              <div class="bg-white/60 backdrop-blur-sm rounded-xl p-6 h-full shadow-sm border border-gray-100/50 hover:shadow-lg hover:border-blue-200/80 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl mb-4 mx-auto">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2 text-center">Have fun reminiscing with friends</h3>
-                <p class="text-gray-600 text-sm leading-relaxed text-center">Turn memories into entertaining stories</p>
-              </div>
-            </div>
-
-            <!-- Find Magic -->
-            <div class="intent-card group cursor-pointer" data-intent="find_magic">
-              <div class="bg-white/60 backdrop-blur-sm rounded-xl p-6 h-full shadow-sm border border-gray-100/50 hover:shadow-lg hover:border-blue-200/80 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl mb-4 mx-auto">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2 text-center">Find magic in everyday moments</h3>
-                <p class="text-gray-600 text-sm leading-relaxed text-center">Elevate ordinary experiences into something special</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Custom Intent Input -->
-      <div class="max-w-2xl mx-auto text-center">
-        <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-gray-100/50 shadow-sm">
-          <p class="text-gray-600 mb-6 font-medium">Or tell us what you're looking for:</p>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <input type="text" id="custom-intent" placeholder="I want to..." class="flex-1 px-4 py-3 bg-white/80 border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300/50 outline-none transition-all duration-200 placeholder-gray-400">
-            <button id="custom-intent-btn" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-sm hover:shadow-lg transform hover:-translate-y-0.5">
-              Continue
-            </button>
-          </div>
+          <% end %>
         </div>
       </div>
     </div>
@@ -247,105 +166,3 @@
     </div>
   </section>
 </div>
-
-<!-- Intent Selection Form (Hidden) -->
-<form id="intent-form" action="<%= select_intent_path %>" method="get" class="hidden">
-  <input type="hidden" name="intent" id="selected-intent">
-  <input type="hidden" name="additional_intents[]" id="additional-intents">
-</form>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const intentCards = document.querySelectorAll('.intent-card');
-  const showMoreBtn = document.getElementById('show-more-btn');
-  const secondaryOptions = document.getElementById('secondary-options');
-  const customIntentInput = document.getElementById('custom-intent');
-  const customIntentBtn = document.getElementById('custom-intent-btn');
-  const intentForm = document.getElementById('intent-form');
-  const selectedIntentInput = document.getElementById('selected-intent');
-  const additionalIntentsInput = document.getElementById('additional-intents');
-
-  let selectedIntents = [];
-
-  // Handle card selection
-  intentCards.forEach(card => {
-    card.addEventListener('click', function() {
-      const intent = this.dataset.intent;
-      
-      // Toggle selection
-      if (selectedIntents.includes(intent)) {
-        selectedIntents = selectedIntents.filter(i => i !== intent);
-        this.classList.remove('selected');
-      } else {
-        selectedIntents.push(intent);
-        this.classList.add('selected');
-      }
-
-      // Update visual state
-      updateCardStates();
-    });
-  });
-
-  // Show/hide secondary options
-  showMoreBtn.addEventListener('click', function() {
-    const isHidden = secondaryOptions.classList.contains('hidden');
-    
-    if (isHidden) {
-      secondaryOptions.classList.remove('hidden');
-      secondaryOptions.style.display = 'block';
-      this.innerHTML = 'Show less options <svg class="w-5 h-5 ml-2 transform rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
-    } else {
-      secondaryOptions.classList.add('hidden');
-      secondaryOptions.style.display = 'none';
-      this.innerHTML = 'Show more options <svg class="w-5 h-5 ml-2 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
-    }
-  });
-
-  // Handle custom intent
-  customIntentBtn.addEventListener('click', function() {
-    const customIntent = customIntentInput.value.trim();
-    if (customIntent) {
-      selectedIntentInput.value = 'custom';
-      additionalIntentsInput.value = customIntent;
-      intentForm.submit();
-    }
-  });
-
-  // Handle Enter key in custom intent input
-  customIntentInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      customIntentBtn.click();
-    }
-  });
-
-  // Update card visual states
-  function updateCardStates() {
-    intentCards.forEach(card => {
-      const intent = card.dataset.intent;
-      const isSelected = selectedIntents.includes(intent);
-      
-      if (isSelected) {
-        card.querySelector('div').classList.add('ring-2', 'ring-blue-500/50', 'bg-gradient-to-br', 'from-blue-50/80', 'to-purple-50/80', 'border-blue-300/80');
-        card.querySelector('div').style.boxShadow = '0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04)';
-      } else {
-        card.querySelector('div').classList.remove('ring-2', 'ring-blue-500/50', 'bg-gradient-to-br', 'from-blue-50/80', 'to-purple-50/80', 'border-blue-300/80');
-        card.querySelector('div').style.boxShadow = '';
-      }
-    });
-
-    // Auto-submit if primary intent is selected
-    if (selectedIntents.length > 0) {
-      const primaryIntent = selectedIntents[0];
-      const additionalIntents = selectedIntents.slice(1);
-      
-      selectedIntentInput.value = primaryIntent;
-      additionalIntentsInput.value = additionalIntents.join(',');
-      
-      // Small delay to show selection feedback
-      setTimeout(() => {
-        intentForm.submit();
-      }, 500);
-    }
-  }
-});
-</script>
