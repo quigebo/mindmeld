@@ -2,12 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
+@layer base {
+  html { @apply antialiased; }
+  body { @apply bg-sand text-charcoal text-body; }
+  h1 { @apply text-h1 font-bold; }
+  h2 { @apply text-h2 font-medium; }
+  p { @apply text-body; }
+  small, .caption { @apply text-caption text-warmgray; }
+}
 
 @layer components {
   .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+    @apply inline-flex items-center justify-center rounded-full bg-coral text-white px-5 py-3 font-semibold shadow-sm transition-brand duration-brand hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full bg-clay text-charcoal px-5 py-3 font-semibold shadow-sm transition-brand duration-brand hover:bg-amber/20;
+  }
+  .pill {
+    @apply rounded-full px-4 py-2 bg-clay text-charcoal/80;
+  }
+  .card {
+    @apply rounded-2xl bg-white/80 backdrop-blur border border-clay/40 shadow-sm;
+  }
+  .dark .card {
+    @apply bg-warmblack/40 border-white/10 text-white;
   }
 }
-
-*/

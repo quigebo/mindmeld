@@ -5,11 +5,8 @@
   <nav class="relative z-10">
     <div class="container mx-auto px-4 py-6">
       <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-            <span class="text-white font-bold text-sm">M</span>
-          </div>
-          <span class="text-xl font-bold text-gray-900">MindMeld</span>
+        <div class="flex items-center space-x-3">
+          <%= image_tag "logos/mindmeld-logo-transparent.png", alt: "MindMeld", class: "h-40 w-40" %>
         </div>
         <div class="hidden md:flex items-center space-x-6">
           <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors duration-200">Features</a>
@@ -54,10 +51,8 @@
           <!-- Remember Stories -->
           <div class="intent-card group cursor-pointer" data-intent="remember_stories">
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-              <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-6 mx-auto">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                </svg>
+              <div class="flex items-center justify-center w-30 mb-6 mx-auto">
+                <%= image_tag "remember.png", alt: "Remember stories", class: "w-full h-full object-contain" %>
               </div>
               <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Remember stories you forgot</h3>
               <p class="text-gray-600 text-sm leading-relaxed text-center">Recover lost details and moments that slipped away with AI-powered memory enhancement</p>
@@ -74,10 +69,8 @@
           <!-- Reconnect Friends -->
           <div class="intent-card group cursor-pointer" data-intent="reconnect_friends">
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-              <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-6 mx-auto">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                </svg>
+              <div class="flex items-center justify-center w-30 mb-6 mx-auto">
+                <%= image_tag "reconnect.png", alt: "Reconnect with friends", class: "w-full h-full object-contain" %>
               </div>
               <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Reconnect with friends</h3>
               <p class="text-gray-600 text-sm leading-relaxed text-center">Strengthen bonds through shared memories and collaborative storytelling experiences</p>
@@ -94,10 +87,8 @@
           <!-- Preserve Memories -->
           <div class="intent-card group cursor-pointer" data-intent="preserve_memories">
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-              <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl mb-6 mx-auto">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                </svg>
+              <div class="flex items-center justify-center w-30 mb-6 mx-auto">
+                <%= image_tag "preserve-memories.png", alt: "Preserve memories for family", class: "w-full h-full object-contain" %>
               </div>
               <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Preserve memories for my family</h3>
               <p class="text-gray-600 text-sm leading-relaxed text-center">Create a lasting legacy for future generations with beautifully crafted family stories</p>
@@ -114,10 +105,8 @@
           <!-- Create Stories -->
           <div class="intent-card group cursor-pointer" data-intent="create_stories">
             <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 h-full shadow-sm border border-gray-100/50 hover:shadow-xl hover:border-blue-200/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]">
-              <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-6 mx-auto">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
-                </svg>
+              <div class="flex items-center justify-center w-30 mb-6 mx-auto">
+                <%= image_tag "collective-storytelling.png", alt: "Create beautiful stories together", class: "w-full h-full object-contain" %>
               </div>
               <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Create beautiful stories together</h3>
               <p class="text-gray-600 text-sm leading-relaxed text-center">Transform raw experiences into meaningful narratives with collaborative creativity</p>
