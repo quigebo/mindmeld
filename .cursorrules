@@ -40,6 +40,7 @@
   - Implement caching strategies (fragment caching, Russian Doll caching).
   - Use eager loading to avoid N+1 queries.
   - Optimize database queries using includes, joins, or select.
+  - Use #size instead of #count where possible to minimize database queries unless it is absolutely critical to have the the correct count from the database
   
   Key Conventions
   - Follow RESTful routing conventions.
