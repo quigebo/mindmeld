@@ -13,6 +13,42 @@ class StoriesController < ApplicationController
 
   def new
     @story = Story.new
+    @intent = params[:intent] || session[:primary_intent]
+    @additional_intents = session[:additional_intents] || []
+    
+    # Set personalized messaging based on intent
+    @intent_messaging = case @intent
+    when 'remember_stories'
+      {
+        title: "Let's recover those forgotten details together",
+        subtitle: "What story would you like to remember?",
+        placeholder: "Start with what you remember, even if it's just fragments..."
+      }
+    when 'reconnect_friends'
+      {
+        title: "Reconnect through the power of shared stories",
+        subtitle: "What story connects you with someone special?",
+        placeholder: "Tell us about a moment that brought you closer together..."
+      }
+    when 'preserve_memories'
+      {
+        title: "Create a lasting legacy for future generations",
+        subtitle: "What story do you want to preserve forever?",
+        placeholder: "Share a story that future generations should know..."
+      }
+    when 'create_stories'
+      {
+        title: "Transform raw experiences into something beautiful",
+        subtitle: "What story would you like to craft together?",
+        placeholder: "Start with the experience you want to turn into a story..."
+      }
+    else
+      {
+        title: "Share your story",
+        subtitle: "What would you like to remember?",
+        placeholder: "Tell us about a moment, experience, or memory..."
+      }
+    end
   end
 
   def create

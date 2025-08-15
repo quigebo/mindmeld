@@ -1,6 +1,6 @@
-# Hotwire Native Setup for iOS
+# Hotwire Native Setup Guide
 
-This guide will help you set up Hotwire Native to create a native iOS app that works with your Rails Hotwire backend.
+This guide explains how to set up MindMeld as a native mobile app using Hotwire Native.
 
 ## What's Already Set Up
 
@@ -13,18 +13,12 @@ Your Rails application is already configured with:
 - ✅ **RESTful API endpoints** - For stories and comments
 - ✅ **Real-time updates** - Turbo Streams for live comment updates
 
-## iOS App Setup
-
-### 1. Install Xcode
-
-Make sure you have Xcode installed on your Mac (required for iOS development).
-
-### 2. Install Turbo iOS
+## iOS Setup
 
 ```bash
-# Create a new iOS project directory
-mkdir Storytime-iOS
-cd Storytime-iOS
+# Create iOS project directory
+mkdir MindMeld-iOS
+cd MindMeld-iOS
 
 # Install Turbo iOS using Swift Package Manager
 # Add this to your Xcode project: https://github.com/hotwired/turbo-ios

@@ -1,6 +1,6 @@
-# LLM Integration with RubyLLM
+# LLM Integration
 
-This document describes the LLM (Large Language Model) integration in Storytime, which uses [RubyLLM](https://github.com/crmne/ruby_llm) to automatically analyze comments and synthesize collaborative memories.
+This document describes the LLM (Large Language Model) integration in MindMeld, which uses [RubyLLM](https://github.com/crmne/ruby_llm) to automatically analyze comments and synthesize collaborative memories.
 
 ## Overview
 

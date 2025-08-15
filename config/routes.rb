@@ -10,11 +10,17 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "stories#index"
+  root "pages#home"
+  
+  # Landing page and intent selection
+  get "select_intent", to: "pages#select_intent"
   
   # Stories routes
   resources :stories, only: [:index, :show, :new, :create] do
     resources :comments, only: [:create]
     resources :entities, only: [:show]
   end
+  
+  # Redirect old root to new landing page
+  get "stories", to: "stories#index"
 end
