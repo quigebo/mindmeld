@@ -1,62 +1,26 @@
 class StoriesController < ApplicationController
+  before_action :authenticate_user!, only: [:new, :create]
   before_action :set_story, only: [:show]
 
   def index
-    @stories = Story.includes(:creator, :synthesized_memory).order(created_at: :desc)
+    @stories = current_user&.stories || []
   end
 
   def show
-    @comments = @story.comment_threads.memory_worthy.chronological.includes(:user)
-    @synthesized_memory = @story.synthesized_memory
-    @grouped_entities = Entity.grouped_by_type(@story)
   end
 
   def new
     @story = Story.new
-    @intent = params[:intent] || session[:primary_intent]
-    @additional_intents = session[:additional_intents] || []
-    
-    # Set personalized messaging based on intent
-    @intent_messaging = case @intent
-    when 'remember_stories'
-      {
-        title: "Let's recover those forgotten details together",
-        subtitle: "What story would you like to remember?",
-        placeholder: "Start with what you remember, even if it's just fragments..."
-      }
-    when 'reconnect_friends'
-      {
-        title: "Reconnect through the power of shared stories",
-        subtitle: "What story connects you with someone special?",
-        placeholder: "Tell us about a moment that brought you closer together..."
-      }
-    when 'preserve_memories'
-      {
-        title: "Create a lasting legacy for future generations",
-        subtitle: "What story do you want to preserve forever?",
-        placeholder: "Share a story that future generations should know..."
-      }
-    when 'create_stories'
-      {
-        title: "Transform raw experiences into something beautiful",
-        subtitle: "What story would you like to craft together?",
-        placeholder: "Start with the experience you want to turn into a story..."
-      }
-    else
-      {
-        title: "Share your story",
-        subtitle: "What would you like to remember?",
-        placeholder: "Tell us about a moment, experience, or memory..."
-      }
-    end
+    @intent_messaging = get_intent_messaging(params[:intent])
   end
 
   def create
-    @story = current_user.stories.build(story_params)
+    @story = current_user.created_stories.build(story_params)
     
     if @story.save
       redirect_to @story, notice: 'Story was successfully created.'
     else
+      @intent_messaging = get_intent_messaging(params[:intent])
       render :new, status: :unprocessable_entity
     end
   end
@@ -68,11 +32,41 @@ class StoriesController < ApplicationController
   end
 
   def story_params
-    params.require(:story).permit(:title, :description, :start_date, :end_date)
+    params.require(:story).permit(:title, :description)
   end
 
-  def current_user
-    # For now, we'll use a default user. In a real app, you'd have authentication
-    User.first || User.create!(name: "Default User", email: "user@example.com")
+  def get_intent_messaging(intent)
+    case intent
+    when 'remember_stories'
+      {
+        title: 'Remember Stories You Forgot',
+        subtitle: 'Let\'s piece together the memories you thought were lost',
+        placeholder: 'Start with what you remember, even if it\'s just fragments...'
+      }
+    when 'reconnect_friends'
+      {
+        title: 'Reconnect with Friends',
+        subtitle: 'Create something beautiful together and rediscover each other',
+        placeholder: 'Tell me about the people you want to reconnect with...'
+      }
+    when 'preserve_memories'
+      {
+        title: 'Preserve Family Stories',
+        subtitle: 'Capture the stories that future generations need to hear',
+        placeholder: 'Share the family story you want to preserve forever...'
+      }
+    when 'create_stories'
+      {
+        title: 'Create Beautiful Stories Together',
+        subtitle: 'Turn your memories into something magical with your crew',
+        placeholder: 'What story do you want to create with your friends?'
+      }
+    else
+      {
+        title: 'Create Your Story',
+        subtitle: 'Let\'s turn your memories into something beautiful',
+        placeholder: 'Start with what comes to mind...'
+      }
+    end
   end
 end

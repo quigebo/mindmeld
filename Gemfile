@@ -37,6 +37,11 @@ gem 'ruby_llm-schema'
 gem "faraday"
 gem "faraday-multipart"
 
+# Authentication
+gem "devise"
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
+
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
