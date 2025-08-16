@@ -33,6 +33,10 @@ gem "paper_trail"
 gem "ruby_llm"
 gem 'ruby_llm-schema'
 
+# HTTP client for API calls
+gem "faraday"
+gem "faraday-multipart"
+
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"

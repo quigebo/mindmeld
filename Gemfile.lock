@@ -406,6 +406,8 @@ DEPENDENCIES
   dotenv
   factory_bot_rails
   faker
+  faraday
+  faraday-multipart
   importmap-rails
   jbuilder
   kamal

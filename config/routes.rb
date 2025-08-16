@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   # Landing page and intent selection
   get "select_intent", to: "pages#select_intent"
   
+  # Audio transcription
+  post "transcriptions", to: "transcriptions#create"
+  
   # Stories routes
   resources :stories, only: [:index, :show, :new, :create] do
     resources :comments, only: [:create]
