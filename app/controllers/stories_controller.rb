@@ -7,6 +7,9 @@ class StoriesController < ApplicationController
   end
 
   def show
+    @grouped_entities = Entity.grouped_by_type(@story)
+    @synthesized_memory = @story.synthesized_memory
+    @comments = @story.comment_threads.chronological
   end
 
   def new

@@ -1,10 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "progress", "timer", "transcription", "form", "status"]
-  static values = { 
+  static targets = ["button", "progress", "timer", "status", "description_field", "transcription_status"]
+  static values = {
     maxDuration: { type: Number, default: 300 }, // 5 minutes in seconds
-    isRecording: { type: Boolean, default: false }
+    isRecording: { type: Boolean, default: false },
+    transcriptionOutputField: { type: String } // Required: name of the target field to populate with transcription
   }
 
   connect() {
@@ -16,7 +17,14 @@ export default class extends Controller {
     this.isIOS = this.detectIOS()
     this.isWeb = this.detectWeb()
     this.speechRecognitionFailed = false
-    
+
+    // Validate required value
+    if (!this.transcriptionOutputFieldValue) {
+      console.error('Audio recorder controller requires transcriptionOutputField value')
+      this.element.innerHTML = '<div class="text-red-600 p-4 text-center">Audio recorder configuration error</div>'
+      return
+    }
+
     this.setupSpeechRecognition()
   }
 
@@ -48,11 +56,11 @@ export default class extends Controller {
       this.speechRecognition.continuous = true
       this.speechRecognition.interimResults = true
       this.speechRecognition.lang = 'en-US'
-      
+
       this.speechRecognition.onresult = (event) => {
         let finalTranscript = ''
         let interimTranscript = ''
-        
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript
           if (event.results[i].isFinal) {
@@ -61,15 +69,15 @@ export default class extends Controller {
             interimTranscript += transcript
           }
         }
-        
+
         this.updateTranscription(finalTranscript, interimTranscript)
       }
-      
+
       this.speechRecognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error)
         this.handleTranscriptionError(event.error)
       }
-      
+
       this.speechRecognition.onend = () => {
         if (this.isRecordingValue) {
           // Restart if still recording
@@ -79,72 +87,94 @@ export default class extends Controller {
     }
   }
 
+  // Helper method to get the target field
+  getTargetField() {
+    if (!this.transcriptionOutputFieldValue) {
+      throw new Error('transcriptionOutputField value is required for audio recorder controller')
+    }
+
+    // Try to find textarea by name attribute first (most specific)
+    const textareaByName = this.element.closest('form')?.querySelector(`textarea[name*="${this.transcriptionOutputFieldValue}"]`)
+    if (textareaByName) {
+      return textareaByName
+    }
+
+    // Fallback: look for textarea within the controller element
+    const textareaInElement = this.element.querySelector('textarea')
+    if (textareaInElement) {
+      return textareaInElement
+    }
+
+    // Last resort: look for textarea in the description_field target
+    if (this.hasDescriptionFieldTarget) {
+      const textareaInTarget = this.descriptionFieldTarget.querySelector('textarea')
+      if (textareaInTarget) {
+        return textareaInTarget
+      }
+    }
+
+    throw new Error(`Could not find textarea for field: ${this.transcriptionOutputFieldValue}`)
+  }
+
+  // Show Whisper API error
+  showWhisperError(message) {
+    const textarea = this.getTargetField()
+    if (textarea) {
+      textarea.placeholder = `Error: ${message}. You can still type here.`
+      textarea.disabled = false
+    }
+  }
+
   // Show error for unsupported browsers (like Firefox)
   showUnsupportedBrowserError() {
-    if (this.hasTranscriptionTarget) {
-      this.transcriptionTarget.innerHTML = `
-        <div class="bg-red-50 border border-red-200 rounded-md p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">
-                Audio recording not supported in this browser
-              </h3>
-              <div class="mt-2 text-sm text-red-700">
-                <p>Please use Chrome, Safari, or Edge for audio recording. You can still type your story below.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      `
+    const textarea = this.getTargetField()
+    if (textarea) {
+      textarea.placeholder = 'Audio recording not supported in this browser. Please type here.'
+      textarea.disabled = false
     }
   }
 
   // Start recording
   async startRecording() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
           sampleRate: 44100
-        } 
+        }
       })
-      
+
       this.mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'audio/webm;codecs=opus'
       })
-      
+
       this.audioChunks = []
       this.recordingStartTime = Date.now()
       this.isRecordingValue = true
-      
+
       // Start speech recognition
       if (this.speechRecognition) {
         this.speechRecognition.start()
       }
-      
+
       // Setup recording events
       this.mediaRecorder.ondataavailable = (event) => {
         this.audioChunks.push(event.data)
       }
-      
+
       this.mediaRecorder.onstop = () => {
         this.handleRecordingComplete()
       }
-      
+
       // Start recording
       this.mediaRecorder.start()
-      
+
       // Start timer and progress updates
       this.startTimer()
       this.updateButtonState()
       this.updateStatus(true)
-      
+
     } catch (error) {
       console.error('Error starting recording:', error)
       this.handleRecordingError(error)
@@ -156,11 +186,11 @@ export default class extends Controller {
     if (this.mediaRecorder && this.isRecordingValue) {
       this.mediaRecorder.stop()
       this.mediaRecorder.stream.getTracks().forEach(track => track.stop())
-      
+
       if (this.speechRecognition) {
         this.speechRecognition.stop()
       }
-      
+
       this.isRecordingValue = false
       this.stopTimer()
       this.updateButtonState()
@@ -173,7 +203,7 @@ export default class extends Controller {
     // Prevent form submission
     event.preventDefault()
     event.stopPropagation()
-    
+
     if (this.isRecordingValue) {
       this.stopRecording()
     } else {
@@ -186,10 +216,10 @@ export default class extends Controller {
     this.recordingInterval = setInterval(() => {
       const elapsed = Math.floor((Date.now() - this.recordingStartTime) / 1000)
       const remaining = this.maxDurationValue - elapsed
-      
+
       this.updateProgress(elapsed)
       this.updateTimer(remaining)
-      
+
       if (remaining <= 0) {
         this.stopRecording()
       }
@@ -209,7 +239,7 @@ export default class extends Controller {
       const progress = (elapsed / this.maxDurationValue) * 100
       const circumference = 2 * Math.PI * 45 // Assuming radius of 45
       const offset = circumference - (progress / 100) * circumference
-      
+
       this.progressTarget.style.strokeDasharray = circumference
       this.progressTarget.style.strokeDashoffset = offset
     }
@@ -248,66 +278,81 @@ export default class extends Controller {
   }
 
   updateTranscription(final, interim = '') {
-    if (this.hasTranscriptionTarget) {
-      const displayText = final + (interim ? ` <span class="interim">${interim}</span>` : '')
-      this.transcriptionTarget.innerHTML = displayText
-      
-      // Update form field if connected
-      if (this.hasFormTarget) {
-        const formField = this.formTarget.querySelector('textarea, input[type="text"]')
-        if (formField) {
-          formField.value = final
-        }
+    // Show transcription status
+    if (this.hasTranscriptionStatusTarget) {
+      this.transcriptionStatusTarget.classList.remove('opacity-0')
+      this.transcriptionStatusTarget.classList.add('opacity-100')
+    }
+
+    const textarea = this.getTargetField()
+
+    if (textarea) {
+      // Set the final transcription in the textarea
+      textarea.value = final
+
+      // Show interim text in the placeholder if available
+      if (interim) {
+        textarea.placeholder = `Final: ${final} | Interim: ${interim}`
+      } else {
+        textarea.placeholder = final || 'Start speaking to see your transcription here...'
       }
+
+      // Trigger change event to ensure form knows the value changed
+      textarea.dispatchEvent(new Event('input', { bubbles: true }))
+
+      // Auto-resize textarea to fit content
+      textarea.style.height = 'auto'
+      textarea.style.height = textarea.scrollHeight + 'px'
     }
   }
 
   // Handle recording completion with Whisper fallback
   async handleRecordingComplete() {
+    // Hide transcription status
+    if (this.hasTranscriptionStatusTarget) {
+      this.transcriptionStatusTarget.classList.remove('opacity-100')
+      this.transcriptionStatusTarget.classList.add('opacity-0')
+    }
+
     // If we have audio chunks, try Whisper API regardless of transcription status
     const hasAudio = this.audioChunks.length > 0
-    const hasTranscription = this.transcriptionTarget && this.transcriptionTarget.textContent.trim() !== ''
-    
+    const textarea = this.getTargetField()
+    const hasTranscription = textarea && textarea.value?.trim() !== ''
+
     if (hasAudio) {
-      console.log('Recording completed, audio chunks:', this.audioChunks.length)
-      console.log('Speech recognition failed:', this.speechRecognitionFailed)
-      console.log('Has transcription:', hasTranscription)
-      
       // Try Whisper if speech recognition failed or if we have no transcription
       if (this.speechRecognitionFailed || !hasTranscription) {
-        console.log('Trying Whisper API...')
         await this.processWithWhisper()
-      } else {
-        console.log('Transcription already available from speech recognition')
       }
-    } else {
-      console.log('No audio chunks available for processing')
     }
   }
 
   // Process audio with Whisper API
   async processWithWhisper() {
     try {
-      console.log('Starting Whisper API processing...')
       this.showProcessingMessage()
-      
+
       const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' })
-      console.log('Audio blob created:', audioBlob.size, 'bytes')
-      
+
       const formData = new FormData()
       formData.append('audio', audioBlob, 'recording.webm')
-      
-      console.log('Sending request to /transcriptions...')
+
       const response = await fetch('/transcriptions', {
         method: 'POST',
         body: formData
       })
-      
-      console.log('Response status:', response.status)
-      
+
       if (response.ok) {
         const result = await response.json()
-        console.log('Whisper API success:', result)
+
+        // Re-enable textarea and clear processing message
+        const textarea = this.getTargetField()
+        if (textarea) {
+          textarea.disabled = false
+          textarea.placeholder = 'Your transcription will appear here...'
+        }
+
+        // Update with transcription
         this.updateTranscription(result.transcription)
       } else {
         const error = await response.json()
@@ -322,48 +367,10 @@ export default class extends Controller {
 
   // Show processing message
   showProcessingMessage() {
-    if (this.hasTranscriptionTarget) {
-      this.transcriptionTarget.innerHTML = `
-        <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <svg class="animate-spin h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-blue-800">
-                Processing your audio...
-              </h3>
-              <p class="text-sm text-blue-700">This may take a few seconds.</p>
-            </div>
-          </div>
-        </div>
-      `
-    }
-  }
-
-  // Show Whisper API error
-  showWhisperError(message) {
-    if (this.hasTranscriptionTarget) {
-      this.transcriptionTarget.innerHTML = `
-        <div class="bg-red-50 border border-red-200 rounded-md p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">
-                ${message}
-              </h3>
-              <p class="text-sm text-red-700">You can still type your story below.</p>
-            </div>
-          </div>
-        </div>
-      `
+    const textarea = this.getTargetField()
+    if (textarea) {
+      textarea.placeholder = 'Processing your audio... This may take a few seconds.'
+      textarea.disabled = true
     }
   }
 
@@ -388,14 +395,14 @@ export default class extends Controller {
   // Error handling
   handleRecordingError(error) {
     console.error('Recording error:', error)
-    
+
     let errorMessage = 'Recording failed. Please try again.'
     if (error.name === 'NotAllowedError') {
       errorMessage = 'Microphone access denied. Please allow microphone access and try again.'
     } else if (error.name === 'NotFoundError') {
       errorMessage = 'No microphone found. Please connect a microphone and try again.'
     }
-    
+
     if (this.hasTranscriptionTarget) {
       this.transcriptionTarget.innerHTML = `
         <div class="bg-red-50 border border-red-200 rounded-md p-4">
@@ -418,11 +425,11 @@ export default class extends Controller {
 
   handleTranscriptionError(error) {
     console.error('Transcription error:', error)
-    
+
     let errorMessage = 'Transcription failed. Please try again.'
     let showRetry = false
     let triggerWhisper = false
-    
+
     if (error === 'network') {
       errorMessage = 'Network error with speech recognition. Trying server-side transcription...'
       showRetry = true
@@ -438,20 +445,20 @@ export default class extends Controller {
     } else if (error === 'service-not-allowed') {
       errorMessage = 'Speech recognition service not allowed. Please check your browser settings.'
     }
-    
+
     // If we have audio chunks and speech recognition failed, try Whisper immediately
     if (triggerWhisper && this.audioChunks.length > 0) {
       this.processWithWhisper()
       return
     }
-    
+
     if (this.hasTranscriptionTarget) {
       const retryButton = showRetry ? `
         <button onclick="location.reload()" class="mt-2 px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors">
           Retry
         </button>
       ` : ''
-      
+
       this.transcriptionTarget.innerHTML = `
         <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
           <div class="flex">

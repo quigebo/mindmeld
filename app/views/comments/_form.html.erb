@@ -1,9 +1,23 @@
 <%= form_with model: [story, comment], local: false, class: "space-y-4" do |form| %>
-  <div>
-    <%= form.label :body, "Share your memory", class: "block text-sm font-medium text-gray-700 mb-2" %>
-    <%= form.text_area :body, rows: 3,
-        class: "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
-        placeholder: "What happened? Share the details of this memory..." %>
+  <!-- Audio Recorder Section -->
+  <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-medium text-gray-900">Record Your Memory</h3>
+      <span class="text-xs text-gray-500">Optional - Speak instead of typing</span>
+    </div>
+    
+    <!-- Audio Recorder -->
+    <%= render "comments/audio_recorder" %>
+  </div>
+
+  <!-- Text Input Section -->
+  <div data-audio-recorder-target="description_field" data-field-name="body">
+    <div>
+      <%= form.label :body, "Share your memory", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.text_area :body, rows: 3,
+          class: "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
+          placeholder: "What happened? Share the details of this memory... (or use the audio recorder above)" %>
+    </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -11,24 +11,24 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "pages#home"
-  
+
   # Authentication routes
   devise_for :users, controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks'
   }
-  
+
   # Landing page and intent selection
   get "select_intent", to: "pages#select_intent"
-  
+
   # Audio transcription
   post "transcriptions", to: "transcriptions#create"
-  
+
   # Stories routes
   resources :stories, only: [:index, :show, :new, :create] do
     resources :comments, only: [:create]
     resources :entities, only: [:show]
   end
-  
+
   # Redirect old root to new landing page
   get "stories", to: "stories#index"
 end
