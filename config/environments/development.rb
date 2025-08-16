@@ -73,4 +73,5 @@ Rails.application.configure do
   # Allow connections from iOS Simulator and mobile devices
   config.hosts << "localhost"
   config.hosts << "127.0.0.1"
+  config.hosts << "1225af38a1ba.ngrok-free.app"
 end
