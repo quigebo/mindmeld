@@ -1,0 +1,109 @@
+<!-- Synthesized Memory -->
+<% if synthesized_memory %>
+  <div class="<%= theme_data&.dig(:background_image_url).present? ? 'bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-white' %> rounded-lg shadow-sm border border-gray-200 p-6 mb-6 transition-all duration-1000 ease-in-out">
+    <div class="flex items-center mb-4">
+      <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <h3 class="text-lg font-semibold text-gray-900">Synthesized Memory</h3>
+    </div>
+
+    <div class="prose prose-sm max-w-none">
+      <p class="text-gray-700 leading-relaxed"><%= synthesized_memory.content %></p>
+    </div>
+
+    <div class="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500">
+      Generated on <%= synthesized_memory.generated_at.strftime("%B %d, %Y at %I:%M %p") %>
+    </div>
+  </div>
+<% end %>
+
+<!-- Entities Section -->
+<% if grouped_entities&.values&.any?(&:any?) %>
+  <div class="<%= theme_data&.dig(:background_image_url).present? ? 'bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-white' %> rounded-lg shadow-sm border border-gray-200 p-6 mb-6 transition-all duration-1000 ease-in-out">
+    <div class="flex items-center mb-6">
+      <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+      </svg>
+      <h3 class="text-lg font-semibold text-gray-900">Entities</h3>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- People -->
+      <% if grouped_entities[:people]&.any? %>
+        <%= render "stories/entity_group",
+            entities: grouped_entities[:people],
+            title: "People",
+            icon_path: people_icon_path,
+            color_scheme: people_color_scheme,
+            story: story %>
+      <% end %>
+
+      <!-- Places -->
+      <% if grouped_entities[:places]&.any? %>
+        <%= render "stories/entity_group",
+            entities: grouped_entities[:places],
+            title: "Places",
+            icon_path: places_icon_path,
+            color_scheme: places_color_scheme,
+            story: story %>
+      <% end %>
+
+      <!-- Things -->
+      <% if grouped_entities[:things]&.any? %>
+        <%= render "stories/entity_group",
+            entities: grouped_entities[:things],
+            title: "Things",
+            icon_path: things_icon_path,
+            color_scheme: things_color_scheme,
+            story: story %>
+      <% end %>
+    </div>
+  </div>
+<% elsif !synthesized_memory %>
+  <!-- Show empty state only when there's no synthesized memory AND no entities -->
+  <div class="<%= theme_data&.dig(:background_image_url).present? ? 'bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-white' %> rounded-lg shadow-sm border border-gray-200 p-6 mb-6 transition-all duration-1000 ease-in-out">
+    <div class="flex items-center mb-4">
+      <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+      </svg>
+      <h3 class="text-lg font-semibold text-gray-900">Entities</h3>
+    </div>
+    <div class="text-center text-gray-500 py-8">
+      <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+      </svg>
+      <p>No entities have been extracted from this story yet.</p>
+      <p class="text-sm mt-1">Entities will appear here as you add memories and comments.</p>
+    </div>
+  </div>
+<% end %>
+
+<!-- Comments Section -->
+<div class="<%= theme_data&.dig(:background_image_url).present? ? 'bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-white' %> rounded-lg shadow-sm border border-gray-200 transition-all duration-1000 ease-in-out">
+  <div class="p-6 border-b border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900">Memories</h3>
+    <p class="text-sm text-gray-600 mt-1">Share your memories and experiences from this story.</p>
+  </div>
+
+  <!-- New Comment Form -->
+  <div id="new_comment_form" class="p-6 border-b border-gray-200">
+    <%= render "comments/form", story: story, comment: Comment.new %>
+  </div>
+
+  <!-- Comments List -->
+  <div id="comments" class="divide-y divide-gray-200">
+    <% if comments&.any? %>
+      <% comments.each do |comment| %>
+        <%= render "comments/comment", comment: comment %>
+      <% end %>
+    <% else %>
+      <div class="p-6 text-center text-gray-500">
+        <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+        <p>No memories shared yet. Be the first to add one!</p>
+      </div>
+    <% end %>
+  </div>
+</div>

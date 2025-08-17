@@ -1,4 +1,5 @@
 module LLMIntegration
+
   extend ActiveSupport::Concern
 
   # Check if story has pending LLM analysis

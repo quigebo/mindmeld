@@ -1,18 +1,45 @@
 class StoriesController < ApplicationController
   include StoryAuthorization
 
-  before_action :authenticate_user!, only: [:index, :new, :create]
-  before_action :set_story, only: [:show]
-  before_action :ensure_user_can_view_story, only: [:show]
+  before_action :authenticate_user!, except: [:new]
+  before_action :set_story, only: [:show, :update_theme]
+  before_action :ensure_user_can_view_story, only: [:show, :update_theme]
 
   def index
-    @stories = current_user&.stories || []
+    # Get both stories the user created and stories they participate in
+    created_stories = current_user&.created_stories || []
+    participated_stories = current_user&.stories || []
+
+    # Combine and remove duplicates (in case user is both creator and participant)
+    @stories = (created_stories + participated_stories).uniq.sort_by(&:created_at).reverse
   end
 
   def show
     @grouped_entities = Entity.grouped_by_type(@story)
     @synthesized_memory = @story.synthesized_memory
     @comments = @story.comment_threads.chronological
+
+    # Add theme data for the view
+    @theme_data = get_theme_data
+  end
+
+  def update_theme
+    # Force a theme refresh
+    theme_service = Theming::ThemeManagementService.new(@story)
+    theme_service.refresh_theme
+
+    # Reload the story and get updated data
+    @story.reload
+    @grouped_entities = Entity.grouped_by_type(@story)
+    @synthesized_memory = @story.synthesized_memory
+    @comments = @story.comment_threads.chronological
+    @theme_data = get_theme_data
+
+    respond_to do |format|
+      format.turbo_stream do
+        render :update_theme
+      end
+    end
   end
 
   def new
@@ -39,6 +66,13 @@ class StoriesController < ApplicationController
 
   def story_params
     params.require(:story).permit(:title, :description)
+  end
+
+  def get_theme_data
+    return nil unless @story.theming_enabled?
+
+    theme_service = Theming::ThemeManagementService.new(@story)
+    theme_service.current_theme_data
   end
 
   def get_intent_messaging(intent)

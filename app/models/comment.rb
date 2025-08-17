@@ -20,6 +20,7 @@ class Comment < ActiveRecord::Base
   # Callbacks
   before_save :clean_content
   after_create :schedule_analysis
+  after_create :schedule_theme_analysis
 
   def self.build_from(obj, user_id, body, subject = nil, parent_id = nil)
     new(
@@ -54,5 +55,12 @@ class Comment < ActiveRecord::Base
 
   def schedule_analysis
     CommentAnalysisJob.perform_later(id)
+  end
+
+  def schedule_theme_analysis
+    return unless commentable.is_a?(Story)
+    return unless commentable.theming_enabled?
+
+    Theming::ThemeAnalysisJob.perform_later(commentable.id)
   end
 end

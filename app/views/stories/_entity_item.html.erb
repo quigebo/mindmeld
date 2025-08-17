@@ -1,0 +1,11 @@
+<div class="flex items-center justify-between">
+  <div class="flex-1 min-w-0">
+    <span class="font-medium <%= color_scheme[:text_primary] %> truncate block"><%= entity.name %></span>
+    <span class="text-xs <%= color_scheme[:text_secondary] %>"><%= entity_type_label(entity.entity_type) %></span>
+  </div>
+  <div class="ml-2 flex-shrink-0">
+    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium <%= color_scheme[:badge_bg] %> <%= color_scheme[:badge_text] %>">
+      <%= pluralize(entity.mention_count, 'mention') %>
+    </span>
+  </div>
+</div>

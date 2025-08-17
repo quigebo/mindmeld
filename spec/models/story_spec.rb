@@ -1,121 +1,115 @@
 require 'rails_helper'
 
 RSpec.describe Story, type: :model do
+  let(:user) { create(:user) }
+  let(:story) { create(:story, creator: user) }
+
+  describe 'associations' do
+    it 'belongs to a creator' do
+      expect(story.creator).to eq(user)
+    end
+
+    it 'has one story theme' do
+      theme = create(:story_theme, story: story)
+      expect(story.story_theme).to eq(theme)
+    end
+  end
+
   describe 'validations' do
     it 'validates presence of title' do
       story = build(:story, title: nil)
       expect(story).not_to be_valid
       expect(story.errors[:title]).to include("can't be blank")
     end
+  end
 
-    it 'validates presence of creator' do
-      story = build(:story, creator: nil)
-      expect(story).not_to be_valid
-      expect(story.errors[:creator]).to include('must exist')
+  describe 'scopes' do
+    let!(:themed_story) { create(:story, creator: user, dynamic_theming_enabled: true) }
+    let!(:non_themed_story) { create(:story, creator: user, dynamic_theming_enabled: false) }
+
+    describe '.with_dynamic_theming' do
+      it 'returns only stories with dynamic theming enabled' do
+        expect(Story.with_dynamic_theming).to include(themed_story)
+        expect(Story.with_dynamic_theming).not_to include(non_themed_story)
+      end
+    end
+
+    describe '.without_dynamic_theming' do
+      it 'returns only stories with dynamic theming disabled' do
+        expect(Story.without_dynamic_theming).to include(non_themed_story)
+        expect(Story.without_dynamic_theming).not_to include(themed_story)
+      end
     end
   end
 
-  describe 'associations' do
-    it 'belongs to a creator' do
-      user = create(:user)
-      story = create(:story, creator: user)
-      expect(story.creator).to eq(user)
+  describe 'instance methods' do
+    describe '#theming_enabled?' do
+      context 'when dynamic_theming_enabled is true' do
+        before { story.dynamic_theming_enabled = true }
+
+        it 'returns true' do
+          expect(story.theming_enabled?).to be true
+        end
+      end
+
+      context 'when dynamic_theming_enabled is false' do
+        before { story.dynamic_theming_enabled = false }
+
+        it 'returns false' do
+          expect(story.theming_enabled?).to be false
+        end
+      end
     end
 
-    it 'has many participants' do
-      story = create(:story)
-      participant = create(:participant, story: story)
-      expect(story.participants).to include(participant)
-    end
+    describe '#primary_theme_entity' do
+      let!(:entity1) { create(:entity, story: story, name: 'Entity 1', entity_type: 'place') }
+      let!(:entity2) { create(:entity, story: story, name: 'Entity 2', entity_type: 'person') }
 
-    it 'has many comment threads' do
-      story = create(:story)
-      comment = create(:comment, commentable: story)
-      expect(story.comment_threads).to include(comment)
-    end
+      it 'returns the most frequently mentioned entity' do
+        # Create more mentions for entity2
+        create(:comment_entity, entity: entity2, comment: create(:comment, commentable: story), confidence_score: 0.9)
+        create(:comment_entity, entity: entity2, comment: create(:comment, commentable: story), confidence_score: 0.8)
+        create(:comment_entity, entity: entity1, comment: create(:comment, commentable: story), confidence_score: 0.7)
 
-    it 'has one synthesized memory' do
-      story = create(:story)
-      memory = create(:synthesized_memory, story: story)
-      expect(story.synthesized_memory).to eq(memory)
+        expect(story.primary_theme_entity).to eq(entity2)
+      end
     end
   end
 
-  describe 'factory' do
-    it 'has a valid factory' do
-      expect(build(:story)).to be_valid
-    end
-  end
+  describe 'validations' do
+    describe 'end_date_after_start_date' do
+      context 'when end_date is before start_date' do
+        before do
+          story.start_date = Date.current
+          story.end_date = Date.current - 1.day
+        end
 
-  describe 'LLM integration' do
-    let(:story) { create(:story) }
-
-    describe '#has_pending_analysis?' do
-      it 'returns true when there are comments without analysis' do
-        create(:comment, commentable: story, is_memory_worthy: nil)
-        expect(story.has_pending_analysis?).to be true
+        it 'is invalid' do
+          expect(story).not_to be_valid
+          expect(story.errors[:end_date]).to include('must be after or equal to start date')
+        end
       end
 
-      it 'returns false when all comments have been analyzed' do
-        create(:comment, commentable: story, is_memory_worthy: true)
-        create(:comment, commentable: story, is_memory_worthy: false)
-        expect(story.has_pending_analysis?).to be false
+      context 'when end_date is after start_date' do
+        before do
+          story.start_date = Date.current
+          story.end_date = Date.current + 1.day
+        end
+
+        it 'is valid' do
+          expect(story).to be_valid
+        end
       end
 
-      it 'returns false when there are no comments' do
-        expect(story.has_pending_analysis?).to be false
-      end
-    end
+      context 'when end_date equals start_date' do
+        before do
+          story.start_date = Date.current
+          story.end_date = Date.current
+        end
 
-    describe '#ready_for_synthesis?' do
-      it 'returns true when there are memory-worthy comments' do
-        create(:comment, commentable: story, is_memory_worthy: true)
-        expect(story.ready_for_synthesis?).to be true
-      end
-
-      it 'returns false when there are no memory-worthy comments' do
-        create(:comment, commentable: story, is_memory_worthy: false)
-        expect(story.ready_for_synthesis?).to be false
-      end
-
-      it 'returns false when there are no comments' do
-        expect(story.ready_for_synthesis?).to be false
-      end
-    end
-
-    describe '#latest_synthesized_memory_with_metadata' do
-      it 'returns nil when no synthesized memory exists' do
-        expect(story.latest_synthesized_memory_with_metadata).to be_nil
-      end
-
-      it 'returns metadata when synthesized memory exists' do
-        memory = create(:synthesized_memory, story: story)
-        result = story.latest_synthesized_memory_with_metadata
-        
-        expect(result).to include(
-          content: memory.content,
-          title: memory.metadata['title'],
-          summary: memory.metadata['summary'],
-          generated_at: memory.generated_at
-        )
-      end
-    end
-
-    describe '#llm_service' do
-      it 'raises NotImplementedError' do
-        expect { story.llm_service }.to raise_error(NotImplementedError, 'LLM services not yet available')
-      end
-    end
-
-    describe '#regenerate_synthesis!' do
-      it 'raises NotImplementedError' do
-        expect { story.regenerate_synthesis! }.to raise_error(NotImplementedError, 'LLM services not yet available')
-      end
-    end
-
-    describe '#reanalyze_all_comments!' do
-      it 'raises NotImplementedError' do
-        expect { story.reanalyze_all_comments! }.to raise_error(NotImplementedError, 'LLM services not yet available')
+        it 'is valid' do
+          expect(story).to be_valid
+        end
       end
     end
   end

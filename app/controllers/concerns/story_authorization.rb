@@ -1,7 +1,10 @@
 module StoryAuthorization
   extend ActiveSupport::Concern
 
-  private
+  # Make these methods available to views
+  included do
+    helper_method :user_can_comment_on_story?, :user_can_view_story?
+  end
 
   def user_can_view_story?
     return true unless user_signed_in?
@@ -18,6 +21,8 @@ module StoryAuthorization
     @story.creator == current_user ||
     @story.participants.accepted.exists?(user: current_user)
   end
+
+  private
 
   def ensure_user_can_view_story
     unless user_can_view_story?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_16_123607) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_17_162822) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -128,7 +128,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_123607) do
     t.date "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "dynamic_theming_enabled", default: true, null: false
     t.index ["creator_id"], name: "index_stories_on_creator_id"
+  end
+
+  create_table "story_themes", force: :cascade do |t|
+    t.integer "story_id", null: false
+    t.integer "source_entity_id", null: false
+    t.string "background_image_url"
+    t.string "icon_pack"
+    t.json "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_entity_id"], name: "index_story_themes_on_source_entity_id"
+    t.index ["story_id"], name: "index_story_themes_on_story_id", unique: true
   end
 
   create_table "synthesized_memories", force: :cascade do |t|
@@ -187,6 +200,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_123607) do
   add_foreign_key "participants", "stories"
   add_foreign_key "participants", "users"
   add_foreign_key "stories", "users", column: "creator_id"
+  add_foreign_key "story_themes", "entities", column: "source_entity_id"
+  add_foreign_key "story_themes", "stories"
   add_foreign_key "synthesized_memories", "stories"
   add_foreign_key "tool_calls", "messages"
 end

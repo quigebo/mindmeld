@@ -1,0 +1,24 @@
+<div class="lg:col-span-1">
+  <div class="flex items-center mb-3">
+    <div class="<%= "w-8 h-8 #{color_scheme[:bg_light]} rounded-full flex items-center justify-center mr-3" %>">
+      <svg class="<%= "w-4 h-4 #{color_scheme[:icon]}" %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= icon_path %>"></path>
+      </svg>
+    </div>
+    <h4 class="text-md font-medium text-gray-900"><%= title %></h4>
+  </div>
+
+  <div class="space-y-2">
+    <% entities.each do |entity| %>
+      <% if defined?(story) && story.present? %>
+        <%= link_to story_entity_path(story, entity), class: "block p-3 #{color_scheme[:card_bg]} hover:#{color_scheme[:card_hover]} rounded-lg border #{color_scheme[:border]} transition-colors duration-200" do %>
+          <%= render "stories/entity_item", entity: entity, color_scheme: color_scheme %>
+        <% end %>
+      <% else %>
+        <div class="<%= "block p-3 #{color_scheme[:card_bg]} rounded-lg border #{color_scheme[:border]}" %>">
+          <%= render "stories/entity_item", entity: entity, color_scheme: color_scheme %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

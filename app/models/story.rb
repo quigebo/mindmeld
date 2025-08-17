@@ -14,6 +14,7 @@ class Story < ApplicationRecord
   has_many :users, through: :participants
   has_one :synthesized_memory, dependent: :destroy
   has_many :entities, dependent: :destroy
+  has_one :story_theme, dependent: :destroy
 
   # Validations
   validates :title, presence: true
@@ -21,6 +22,19 @@ class Story < ApplicationRecord
 
   # Scopes
   scope :recent, -> { order(created_at: :desc) }
+  scope :with_dynamic_theming, -> { where(dynamic_theming_enabled: true) }
+  scope :without_dynamic_theming, -> { where(dynamic_theming_enabled: false) }
+
+  # Instance methods
+  def theming_enabled?
+    dynamic_theming_enabled?
+  end
+
+  def primary_theme_entity
+    # For now, return the most frequently mentioned entity
+    # This will be enhanced in Phase 2 with the ThemeIdentifierService
+    entities.by_mention_count.first
+  end
 
   private
 

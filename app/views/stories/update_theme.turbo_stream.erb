@@ -1,0 +1,78 @@
+<%= turbo_stream.update "theme_background" do %>
+  <% if @theme_data&.dig(:background_image_url).present? %>
+    <div class="fixed inset-0 z-0 transition-all duration-1000 ease-in-out">
+      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
+           style="background-image: url('<%= @theme_data[:background_image_url] %>');">
+      </div>
+      <!-- Overlay for better text readability -->
+      <div class="absolute inset-0 bg-black bg-opacity-30 transition-all duration-1000 ease-in-out"></div>
+    </div>
+
+    <!-- Theme indicator -->
+    <div class="relative z-10 mb-4 animate-fade-in">
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white bg-opacity-90 text-gray-800 shadow-sm">
+        <svg class="w-4 h-4 mr-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"></path>
+        </svg>
+        Themed: <%= @theme_data[:primary_entity]&.name %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.update "story_content" do %>
+  <div class="min-h-screen <%= @theme_data&.dig(:background_image_url).present? ? 'relative z-10' : 'bg-gray-50' %>">
+    <!-- Header -->
+    <div class="<%= @theme_data&.dig(:background_image_url).present? ? 'bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-white' %> shadow-sm border-b border-gray-200 transition-all duration-1000 ease-in-out">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-4">
+          <div class="flex items-center">
+            <%= link_to stories_path, class: "mr-3 text-gray-400 hover:text-gray-600" do %>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            <% end %>
+            <h1 class="text-xl font-semibold text-gray-900"><%= @story.title %></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- Story Details -->
+      <div class="<%= @theme_data&.dig(:background_image_url).present? ? 'bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-white' %> rounded-lg shadow-sm border border-gray-200 p-6 mb-6 transition-all duration-1000 ease-in-out">
+        <div class="mb-4">
+          <h2 class="text-lg font-semibold text-gray-900 mb-2"><%= @story.title %></h2>
+          <p class="text-gray-600"><%= @story.description %></p>
+        </div>
+
+        <div class="flex items-center text-sm text-gray-500 mb-4">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <%= @story.creator.name %>
+          <span class="mx-2">•</span>
+          <%= @story.created_at.strftime("%B %d, %Y") %>
+        </div>
+
+        <% if @story.start_date || @story.end_date %>
+          <div class="flex items-center text-sm text-gray-500">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <% if @story.start_date && @story.end_date %>
+              <%= @story.start_date.strftime("%B %d") %> - <%= @story.end_date.strftime("%B %d, %Y") %>
+            <% elsif @story.start_date %>
+              <%= @story.start_date.strftime("%B %d, %Y") %>
+            <% elsif @story.end_date %>
+              <%= @story.end_date.strftime("%B %d, %Y") %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Rest of the content sections with themed styling -->
+      <%= render "stories/content_sections" %>
+    </div>
+  </div>
+<% end %>

@@ -25,6 +25,9 @@ Rails.application.routes.draw do
 
   # Stories routes
   resources :stories, only: [:index, :show, :new, :create] do
+    member do
+      patch :update_theme
+    end
     resources :comments, only: [:create]
     resources :entities, only: [:show]
   end

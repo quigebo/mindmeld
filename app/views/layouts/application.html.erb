@@ -34,7 +34,7 @@
               <span class="text-xl font-bold text-gray-900">MindMeld</span>
             <% end %>
           </div>
-          
+
           <div class="flex items-center space-x-4">
             <% if user_signed_in? %>
               <span class="text-sm text-gray-700">Welcome, <%= current_user.name %></span>
@@ -54,7 +54,7 @@
         <span class="block sm:inline"><%= notice %></span>
       </div>
     <% end %>
-    
+
     <% if alert %>
       <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded relative mb-4" role="alert">
         <span class="block sm:inline"><%= alert %></span>

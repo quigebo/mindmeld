@@ -1,0 +1,19 @@
+<% if @theme_data&.dig(:background_image_url).present? %>
+  <div class="fixed inset-0 z-0">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+         style="background-image: url('<%= @theme_data[:background_image_url] %>');">
+    </div>
+    <!-- Overlay for better text readability -->
+    <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+  </div>
+
+  <!-- Theme indicator -->
+  <div class="relative z-10 mb-4">
+    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white bg-opacity-90 text-gray-800 shadow-sm">
+      <svg class="w-4 h-4 mr-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"></path>
+      </svg>
+      Themed: <%= @theme_data[:primary_entity]&.name %>
+    </div>
+  </div>
+<% end %>
