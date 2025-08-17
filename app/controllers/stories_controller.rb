@@ -1,6 +1,9 @@
 class StoriesController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  include StoryAuthorization
+
+  before_action :authenticate_user!, only: [:index, :new, :create]
   before_action :set_story, only: [:show]
+  before_action :ensure_user_can_view_story, only: [:show]
 
   def index
     @stories = current_user&.stories || []
@@ -19,7 +22,7 @@ class StoriesController < ApplicationController
 
   def create
     @story = current_user.created_stories.build(story_params)
-    
+
     if @story.save
       redirect_to @story, notice: 'Story was successfully created.'
     else

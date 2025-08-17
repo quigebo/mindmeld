@@ -1,9 +1,10 @@
 class TranscriptionsController < ApplicationController
+  before_action :authenticate_user!
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
     audio_file = params[:audio]
-    
+
     if audio_file.blank?
       render json: { error: 'No audio file provided' }, status: :bad_request
       return

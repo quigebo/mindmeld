@@ -1,5 +1,9 @@
 class CommentsController < ApplicationController
+  include StoryAuthorization
+
+  before_action :authenticate_user!
   before_action :set_story
+  before_action :ensure_user_can_comment
 
   def create
     @comment = @story.comment_threads.build(comment_params)
@@ -16,8 +20,8 @@ class CommentsController < ApplicationController
         format.html { redirect_to @story, notice: 'Comment was successfully added.' }
       else
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("new_comment_form", 
-            partial: "comments/form", 
+          render turbo_stream: turbo_stream.update("new_comment_form",
+            partial: "comments/form",
             locals: { story: @story, comment: @comment }
           )
         end
@@ -32,12 +36,9 @@ class CommentsController < ApplicationController
     @story = Story.find(params[:story_id])
   end
 
+
+
   def comment_params
     params.require(:comment).permit(:body, :location, :occurred_at)
-  end
-
-  def current_user
-    # For now, we'll use a default user. In a real app, you'd have authentication
-    User.first || User.create!(name: "Default User", email: "user@example.com")
   end
 end
